@@ -1,0 +1,232 @@
+# 三端共用的 Mihomo 主配置示例：Windows / macOS / Android。
+# 本文件可公开，但必须通过客户端本地脚本替换两个订阅占位地址。
+# 不要直接填真实凭据后上传。操作与限制见 README.md。
+
+mixed-port: 7890
+allow-lan: false
+mode: rule
+log-level: info
+ipv6: false
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+# 不设置 external-controller / secret；由客户端管理。
+# 不写死 TUN 设备名、网卡、系统代理或 Android VPN 参数。
+# 在各客户端启用接管；如开启客户端 DNS 覆写，应检查是否覆盖以下 DNS。
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+    - '*.lan'
+    - '*.local'
+    - '+.msftconnecttest.com'
+    - '+.msftncsi.com'
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  proxy-server-nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  # 初学示例使用可直连的 DNS，避免首次启动依赖尚未就绪的代理。
+  # 不承诺防 DNS 泄漏；加密 DNS 提供方仍能看到解析请求。
+  nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+
+proxy-providers:
+  airport-a:
+    type: http
+    url: 'https://example.invalid/airport-a'
+    path: ./providers/airport-a.yaml
+    interval: 21600
+    proxy: DIRECT
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 900
+      lazy: true
+    # 仅示范保守改名，不删除编号、倍率、专线等信息。
+    override:
+      additional-prefix: '[A] '
+      proxy-name:
+        - pattern: '(?i)Hong[ -]?Kong'
+          target: '香港'
+        - pattern: '(?i)United[ -]?States'
+          target: '美国'
+        - pattern: '(?i)Japan'
+          target: '日本'
+        - pattern: '(?i)Singapore'
+          target: '新加坡'
+
+  airport-b:
+    type: http
+    url: 'https://example.invalid/airport-b'
+    path: ./providers/airport-b.yaml
+    interval: 21600
+    proxy: DIRECT
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 900
+      lazy: true
+    override:
+      additional-prefix: '[B] '
+      proxy-name:
+        - pattern: '(?i)Hong[ -]?Kong'
+          target: '香港'
+        - pattern: '(?i)United[ -]?States'
+          target: '美国'
+        - pattern: '(?i)Japan'
+          target: '日本'
+        - pattern: '(?i)Singapore'
+          target: '新加坡'
+
+proxy-groups:
+  - name: 默认代理
+    type: select
+    proxies: [全部节点, 自动选择, 香港节点, 日本节点, 美国节点, 新加坡节点, 机场A, 机场B]
+
+  - name: AI服务
+    type: select
+    # 默认交给全部节点，避免“美国节点”无匹配时意外选到兜底项。
+    # AI/流媒体可用性不能靠延迟测试保证，请在此固定已验证的出口。
+    proxies: [全部节点, 美国节点, 日本节点, 新加坡节点, 默认代理]
+
+  - name: YouTube
+    type: select
+    proxies: [默认代理, 香港节点, 日本节点, 美国节点, 全部节点]
+
+  - name: Telegram
+    type: select
+    proxies: [默认代理, 新加坡节点, 香港节点, 全部节点]
+
+  - name: 全部节点
+    type: select
+    use: [airport-a, airport-b]
+
+  - name: 自动选择
+    type: url-test
+    use: [airport-a, airport-b]
+    url: https://www.gstatic.com/generate_204
+    interval: 900
+    tolerance: 80
+    lazy: true
+
+  - name: 机场A
+    type: select
+    use: [airport-a]
+
+  - name: 机场B
+    type: select
+    use: [airport-b]
+
+  # REJECT 为地区无匹配时的显式兜底，不会悄悄直连。
+  # 若地区组显示 REJECT，请勿选择它；若有节点但默认选中 REJECT，手动选节点。
+  - name: 香港节点
+    type: select
+    proxies: [REJECT]
+    use: [airport-a, airport-b]
+    filter: '(?i)香港|Hong[ -]?Kong|\bHK\b|🇭🇰'
+
+  - name: 日本节点
+    type: select
+    proxies: [REJECT]
+    use: [airport-a, airport-b]
+    filter: '(?i)日本|Japan|\bJP\b|🇯🇵'
+
+  - name: 美国节点
+    type: select
+    proxies: [REJECT]
+    use: [airport-a, airport-b]
+    filter: '(?i)美国|United[ -]?States|\bUS\b|\bUSA\b|🇺🇸'
+
+  - name: 新加坡节点
+    type: select
+    proxies: [REJECT]
+    use: [airport-a, airport-b]
+    filter: '(?i)新加坡|Singapore|\bSG\b|🇸🇬'
+
+# 统一使用 MetaCubeX 的 MRS 数据，不额外依赖 geosite.dat / geoip.dat。
+# 下载使用 DIRECT：避免首次安装时必须先有代理的循环依赖。
+# 若所在网络无法直连 raw.githubusercontent.com，见 README 的首次下载说明。
+rule-providers:
+  private-domain:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs
+    path: ./rules/private-domain.mrs
+    interval: 86400
+    proxy: DIRECT
+  cn-domain:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs
+    path: ./rules/cn-domain.mrs
+    interval: 86400
+    proxy: DIRECT
+  openai-domain:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/openai.mrs
+    path: ./rules/openai-domain.mrs
+    interval: 86400
+    proxy: DIRECT
+  anthropic-domain:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/anthropic.mrs
+    path: ./rules/anthropic-domain.mrs
+    interval: 86400
+    proxy: DIRECT
+  youtube-domain:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs
+    path: ./rules/youtube-domain.mrs
+    interval: 86400
+    proxy: DIRECT
+  telegram-domain:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs
+    path: ./rules/telegram-domain.mrs
+    interval: 86400
+    proxy: DIRECT
+  private-ip:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs
+    path: ./rules/private-ip.mrs
+    interval: 86400
+    proxy: DIRECT
+  cn-ip:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs
+    path: ./rules/cn-ip.mrs
+    interval: 86400
+    proxy: DIRECT
+
+rules:
+  # 自己添加的精确例外放在这里，规则从上往下先匹配先生效。
+  # - DOMAIN-SUFFIX,example.com,AI服务
+  - RULE-SET,private-domain,DIRECT
+  - RULE-SET,private-ip,DIRECT,no-resolve
+  - RULE-SET,openai-domain,AI服务
+  - RULE-SET,anthropic-domain,AI服务
+  - RULE-SET,youtube-domain,YouTube
+  - RULE-SET,telegram-domain,Telegram
+  - RULE-SET,cn-domain,DIRECT
+  - RULE-SET,cn-ip,DIRECT
+  - MATCH,默认代理

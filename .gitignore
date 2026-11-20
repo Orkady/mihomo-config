@@ -1,0 +1,9 @@
+# 只公开 main.yaml、空白脚本模板及说明；不要提交客户端数据。
+.validation/
+private/
+providers/
+rules/
+*.private.*
+*.local.*
+inject-subscriptions.js
+.DS_Store
