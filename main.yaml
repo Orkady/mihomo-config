@@ -45,6 +45,9 @@ proxy-providers:
   airport-a:
     type: http
     url: 'https://example.invalid/airport-a'
+    # 固定标准客户端 UA，避免不同客户端或内核版本被机场风控误判。
+    header: &standard_ua
+      User-Agent: ["clash.meta/v1.19.33"]
     # 套餐状态有时被机场作为节点下发。只排除带状态标题和冒号的条目。
     exclude-filter: &subscription_status '^\s*(?:\[[^\]]+\]\s*)*(?:剩[余餘]流量|距[离離]下次重置剩[余餘]|套餐到期)\s*[:：]'
     path: ./providers/airport-a.yaml
@@ -121,6 +124,7 @@ proxy-providers:
   airport-b:
     type: http
     url: 'https://example.invalid/airport-b'
+    header: *standard_ua
     exclude-filter: *subscription_status
     path: ./providers/airport-b.yaml
     interval: 21600
