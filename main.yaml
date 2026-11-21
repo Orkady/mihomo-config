@@ -49,7 +49,7 @@ proxy-providers:
     header: &standard_ua
       User-Agent: ["clash.meta/v1.19.33"]
     # 套餐状态有时被机场作为节点下发。只排除带状态标题和冒号的条目。
-    exclude-filter: &subscription_status '^\s*(?:\[[^\]]+\]\s*)*(?:剩[余餘]流量|距[离離]下次重置剩[余餘]|套餐到期)\s*[:：]'
+    exclude-filter: &subscription_status '^\s*(?:[\[「][^\]」]+[\]」]\s*)*(?:(?:剩[余餘]流量|距[离離]下次重置剩[余餘]|套餐到期)\s*[:：]|(?:已|共)?(?:过滤|過濾|剔除)[掉了]?\s*\d*\s*[条條]?\s*线路)'
     path: ./providers/airport-a.yaml
     interval: 21600
     proxy: DIRECT
