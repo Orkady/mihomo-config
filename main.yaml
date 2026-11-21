@@ -46,7 +46,7 @@ proxy-providers:
     type: http
     url: 'https://example.invalid/airport-a'
     # 套餐状态有时被机场作为节点下发。只排除带状态标题和冒号的条目。
-    exclude-filter: '^\s*(?:\[[^\]]+\]\s*)*(?:剩[余餘]流量|距[离離]下次重置剩[余餘]|套餐到期)\s*[:：]'
+    exclude-filter: &subscription_status '^\s*(?:\[[^\]]+\]\s*)*(?:剩[余餘]流量|距[离離]下次重置剩[余餘]|套餐到期)\s*[:：]'
     path: ./providers/airport-a.yaml
     interval: 21600
     proxy: DIRECT
@@ -59,6 +59,12 @@ proxy-providers:
       additional-prefix: '[A] '
       # 保留原标签和编号，避免 HK01 和 香港01 改成同名。两个机场共用此表。
       proxy-name: &region_labels
+        - pattern: '(家|商)寬'
+          target: '${1}宽'
+        - pattern: '家庭[宽寬][带帶]'
+          target: '家庭宽带'
+        - pattern: '商[业業][宽寬][带帶]'
+          target: '商业宽带'
         - pattern: '(?i)(^|[^a-zA-Z])(HK|HKG|Hong[ -]?Kong)(?=[^a-zA-Z]|$)'
           target: '${1}香港·${2}'
         - pattern: '(?i)(^|[^a-zA-Z])(US|USA|United[ -]?States)(?=[^a-zA-Z]|$)'
@@ -115,8 +121,7 @@ proxy-providers:
   airport-b:
     type: http
     url: 'https://example.invalid/airport-b'
-    # 此来源的到期说明仅在节点名称中提供，保留该提示。
-    exclude-filter: '^\s*(?:\[[^\]]+\]\s*)*(?:剩[余餘]流量|距[离離]下次重置剩[余餘])\s*[:：]'
+    exclude-filter: *subscription_status
     path: ./providers/airport-b.yaml
     interval: 21600
     proxy: DIRECT
