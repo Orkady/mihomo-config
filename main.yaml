@@ -45,6 +45,8 @@ proxy-providers:
   airport-a:
     type: http
     url: 'https://example.invalid/airport-a'
+    # 套餐状态有时被机场作为节点下发。只排除带状态标题和冒号的条目。
+    exclude-filter: '^\s*(?:\[[^\]]+\]\s*)*(?:剩[余餘]流量|距[离離]下次重置剩[余餘]|套餐到期)\s*[:：]'
     path: ./providers/airport-a.yaml
     interval: 21600
     proxy: DIRECT
@@ -113,6 +115,8 @@ proxy-providers:
   airport-b:
     type: http
     url: 'https://example.invalid/airport-b'
+    # 此来源的到期说明仅在节点名称中提供，保留该提示。
+    exclude-filter: '^\s*(?:\[[^\]]+\]\s*)*(?:剩[余餘]流量|距[离離]下次重置剩[余餘])\s*[:：]'
     path: ./providers/airport-b.yaml
     interval: 21600
     proxy: DIRECT
