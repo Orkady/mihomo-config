@@ -36,6 +36,11 @@ dns:
     - https://dns.alidns.com/dns-query
     - https://doh.pub/dns-query
 
+# Full 的分流规则使用 MetaCubeX 的 GeoSite / GeoIP DAT 和下方 8 个规则集。
+geodata-mode: true
+geo-auto-update: true
+geo-update-interval: 24
+
 proxy-providers:
   airport-a:
     type: http
@@ -48,19 +53,36 @@ proxy-providers:
       url: https://www.gstatic.com/generate_204
       interval: 900
       lazy: true
-    # 仅示范保守改名，不删除编号、倍率、专线等信息。
     override:
       additional-prefix: '[A] '
-      proxy-name:
-        - pattern: '(?i)Hong[ -]?Kong'
-          target: '香港'
-        - pattern: '(?i)United[ -]?States'
-          target: '美国'
-        - pattern: '(?i)Japan'
-          target: '日本'
-        - pattern: '(?i)Singapore'
-          target: '新加坡'
-
+      # 保留原标签和编号，避免 HK01 和 香港01 改成同名。两个机场共用此表。
+      proxy-name: &region_labels
+        - pattern: '(?i)(^|[^a-zA-Z])(HK|HKG|Hong[ -]?Kong)(?=[^a-zA-Z]|$)'
+          target: '${1}香港·${2}'
+        - pattern: '(?i)(^|[^a-zA-Z])(US|USA|United[ -]?States)(?=[^a-zA-Z]|$)'
+          target: '${1}美国·${2}'
+        - pattern: '(?i)(^|[^a-zA-Z])(JP|JPN|Japan)(?=[^a-zA-Z]|$)'
+          target: '${1}日本·${2}'
+        - pattern: '(?i)(^|[^a-zA-Z])(SG|Singapore)(?=[^a-zA-Z]|$)'
+          target: '${1}新加坡·${2}'
+        - pattern: '(?i)(^|[^a-zA-Z])(TW|TWN|Taiwan)(?=[^a-zA-Z]|$)'
+          target: '${1}台湾·${2}'
+        - pattern: '(?i)(^|[^a-zA-Z])(KR|KOR|South[ -]?Korea)(?=[^a-zA-Z]|$)'
+          target: '${1}韩国·${2}'
+        - pattern: '(?i)(^|[^a-zA-Z])(CA|Canada)(?=[^a-zA-Z]|$)'
+          target: '${1}加拿大·${2}'
+        - pattern: '(?i)(^|[^a-zA-Z])(UK|GB|GBR|United[ -]?Kingdom)(?=[^a-zA-Z]|$)'
+          target: '${1}英国·${2}'
+        - pattern: '(?i)(^|[^a-zA-Z])(FR|France)(?=[^a-zA-Z]|$)'
+          target: '${1}法国·${2}'
+        - pattern: '(?i)(^|[^a-zA-Z])(DE|DEU|Germany)(?=[^a-zA-Z]|$)'
+          target: '${1}德国·${2}'
+        - pattern: '(?i)(^|[^a-zA-Z])(NL|Netherlands)(?=[^a-zA-Z]|$)'
+          target: '${1}荷兰·${2}'
+        - pattern: '(?i)(^|[^a-zA-Z])(TR|Turkey|Türkiye)(?=[^a-zA-Z]|$)'
+          target: '${1}土耳其·${2}'
+        - pattern: '(?i)(^|[^a-zA-Z])(RU|Russia)(?=[^a-zA-Z]|$)'
+          target: '${1}俄罗斯·${2}'
   airport-b:
     type: http
     url: 'https://example.invalid/airport-b'
@@ -74,159 +96,521 @@ proxy-providers:
       lazy: true
     override:
       additional-prefix: '[B] '
-      proxy-name:
-        - pattern: '(?i)Hong[ -]?Kong'
-          target: '香港'
-        - pattern: '(?i)United[ -]?States'
-          target: '美国'
-        - pattern: '(?i)Japan'
-          target: '日本'
-        - pattern: '(?i)Singapore'
-          target: '新加坡'
+      proxy-name: *region_labels
 
+# Aethersailor Full：服务组选出口，地区组跨机场测速。
 proxy-groups:
-  - name: 默认代理
+  - name: 🚀 手动选择
     type: select
-    proxies: [全部节点, 自动选择, 香港节点, 日本节点, 美国节点, 新加坡节点, 机场A, 机场B]
-
-  - name: AI服务
-    type: select
-    # 默认交给全部节点，避免“美国节点”无匹配时意外选到兜底项。
-    # AI/流媒体可用性不能靠延迟测试保证，请在此固定已验证的出口。
-    proxies: [全部节点, 美国节点, 日本节点, 新加坡节点, 默认代理]
-
-  - name: YouTube
-    type: select
-    proxies: [默认代理, 香港节点, 日本节点, 美国节点, 全部节点]
-
-  - name: Telegram
-    type: select
-    proxies: [默认代理, 新加坡节点, 香港节点, 全部节点]
-
-  - name: 全部节点
-    type: select
-    use: [airport-a, airport-b]
-
-  - name: 自动选择
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png
+    proxies: &choices_1 [♻️ 自动选择, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 机场A, 机场B]
+    include-all-providers: true
+  - name: ♻️ 自动选择
     type: url-test
-    use: [airport-a, airport-b]
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
+    include-all-providers: true
+    empty-fallback: REJECT
     url: https://www.gstatic.com/generate_204
-    interval: 900
-    tolerance: 80
-    lazy: true
-
+    interval: 300
+    tolerance: 50
+  - name: 📨 Telegram
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/powerfullz/override-rules@main/icons/Telegram.png
+    proxies: &choices_3 [🚀 手动选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点]
+    include-all-providers: true
+  - name: 🎧 Discord
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png
+    proxies: *choices_3
+    include-all-providers: true
+  - name: 📞 Talkatone
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png
+    proxies: *choices_3
+    include-all-providers: true
+  - name: 📹 Zoom
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Media.png
+    proxies: &choices_6 [🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, ♻️ 自动选择, 🚀 手动选择, 🎯 全球直连]
+    include-all-providers: true
+  - name: 💬 即时通讯
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Mail.png
+    proxies: *choices_3
+    include-all-providers: true
+  - name: 🌐 社交媒体
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
+    proxies: *choices_3
+    include-all-providers: true
+  - name: 🚀 GitHub
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png
+    proxies: &choices_9 [🚀 手动选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🎯 全球直连]
+    include-all-providers: true
+  - name: 📦 容器服务
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
+    proxies: *choices_9
+    include-all-providers: true
+  - name: 💻 开发者服务
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
+    proxies: *choices_9
+    include-all-providers: true
+  - name: 📚 学术资源
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Scholar.png
+    proxies: *choices_9
+    include-all-providers: true
+  - name: 🤖 ChatGPT
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ChatGPT.png
+    proxies: &choices_13 [🚀 手动选择, ♻️ 自动选择, 🇸🇬 新加坡节点, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点]
+    include-all-providers: true
+  - name: 🤖 Copilot
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/powerfullz/override-rules@main/icons/Microsoft_Copilot.png
+    proxies: *choices_13
+    include-all-providers: true
+  - name: 🤖 Claude
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    proxies: *choices_13
+    include-all-providers: true
+  - name: 🤖 Gemini
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    proxies: *choices_13
+    include-all-providers: true
+  - name: 🤖 Grok
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    proxies: *choices_13
+    include-all-providers: true
+  - name: 🤖 国外AI服务
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    proxies: *choices_13
+    include-all-providers: true
+  - name: 🤖 国内AI服务
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    proxies: &choices_19 [🎯 全球直连, 🚀 手动选择, ♻️ 自动选择, 🇸🇬 新加坡节点, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点]
+    include-all-providers: true
+  - name: 🎶 TikTok
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png
+    proxies: *choices_3
+    include-all-providers: true
+  - name: 📹 YouTube
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
+    proxies: *choices_13
+    include-all-providers: true
+  - name: 🎥 Netflix
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png
+    proxies: *choices_13
+    include-all-providers: true
+  - name: 🎥 DisneyPlus
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Disney+.png
+    proxies: *choices_13
+    include-all-providers: true
+  - name: 🎥 HBO
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/HBO.png
+    proxies: *choices_13
+    include-all-providers: true
+  - name: 🎥 PrimeVideo
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Prime_Video.png
+    proxies: *choices_13
+    include-all-providers: true
+  - name: 🎥 AppleTV+
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple_TV_Plus.png
+    proxies: &choices_26 [🚀 手动选择, ♻️ 自动选择, 🇸🇬 新加坡节点, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🎯 全球直连]
+    include-all-providers: true
+  - name: 🎥 Emby
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Emby.png
+    proxies: &choices_27 [🚀 手动选择, ♻️ 自动选择, 🎯 全球直连, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点]
+    include-all-providers: true
+  - name: 🎻 Spotify
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png
+    proxies: *choices_27
+    include-all-providers: true
+  - name: 📺 Bahamut
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bahamut.png
+    proxies: &choices_29 [🇼🇸 台湾节点, 🇭🇰 香港节点, 🚀 手动选择, 🎯 全球直连]
+    include-all-providers: true
+  - name: 🌎 国外媒体
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png
+    proxies: *choices_3
+    include-all-providers: true
+  - name: 📰 新闻资讯
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Media.png
+    proxies: *choices_3
+    include-all-providers: true
+  - name: 🛒 国外电商
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
+    proxies: *choices_3
+    include-all-providers: true
+  - name: 🪙 加密货币
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cryptocurrency_1.png
+    proxies: *choices_3
+    include-all-providers: true
+  - name: 📢 谷歌FCM
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Orz-3/mini@master/Color/Google.png
+    proxies: *choices_27
+    include-all-providers: true
+  - name: 🇬 谷歌服务
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Orz-3/mini@master/Color/Google.png
+    proxies: *choices_3
+    include-all-providers: true
+  - name: 🍎 苹果服务
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple_2.png
+    proxies: &choices_36 [🎯 全球直连, 🚀 手动选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点]
+    include-all-providers: true
+  - name: Ⓜ️ 微软服务
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/powerfullz/override-rules@main/icons/Microsoft_Copilot.png
+    proxies: *choices_36
+    include-all-providers: true
+  - name: 💾 OneDrive
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/OneDrive.png
+    proxies: *choices_36
+    include-all-providers: true
+  - name: 💳 PayPal
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/PayPal.png
+    proxies: *choices_36
+  - name: 🎮 游戏平台
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
+    proxies: *choices_36
+    include-all-providers: true
+  - name: 🎮 Steam
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png
+    proxies: *choices_36
+    include-all-providers: true
+  - name: ⏬ PT站点
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
+    proxies: &choices_42 [🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🚀 手动选择, ♻️ 自动选择, 🎯 全球直连]
+    include-all-providers: true
+  - name: 🚀 测速工具
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Speedtest.png
+    proxies: *choices_36
+    include-all-providers: true
+  - name: 🌍 国外域名
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
+    proxies: *choices_36
+    include-all-providers: true
+  - name: 🐟 漏网之鱼
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png
+    proxies: *choices_36
+    include-all-providers: true
+  - name: 🔀 非标端口
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
+    proxies: &choices_46 [🐟 漏网之鱼, 🎯 全球直连]
+  - name: 🇭🇰 香港节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hong_Kong.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(🇭🇰|港|\bHK(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|hk|Hong Kong|HongKong|hongkong|HONG KONG|HONGKONG|深港|HKG|九龙|Kowloon|新界|沙田|荃湾|葵涌)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🇺🇸 美国节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_States.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(🇺🇸|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|纽约|纽纽|亚特兰大|迈阿密|华盛顿|\bUS(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|United States|UnitedStates|UNITED STATES|USA|America|AMERICA|JFK|EWR|IAD|ATL|ORD|MIA|NYC|LAX|SFO|SEA|DFW|SJC)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🇯🇵 日本节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Japan.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(🇯🇵|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|(?<!尼|-)日|\bJP(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|Japan|JAPAN|JPN|NRT|HND|KIX|TYO|OSA|关西|Kansai|KANSAI)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🇸🇬 新加坡节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Singapore.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(🇸🇬|新加坡|坡|狮城|\bSG(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|Singapore|SINGAPORE|SIN)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🇼🇸 台湾节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Taiwan.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(🇹🇼|🇼🇸|台|新北|彰化|\bTW(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|Taiwan|TAIWAN|TWN|TPE|ROC)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🇰🇷 韩国节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Korea.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(🇰🇷|\bKR(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|Korea|KOREA|KOR|首尔|韩|韓|春川|Chuncheon|ICN)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🇨🇦 加拿大节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Canada.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(🇨🇦|加拿大|\bCA(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|Canada|CANADA|CAN|渥太华|温哥华|卡尔加里|蒙特利尔|Montreal|YVR|YYZ|YUL)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🇬🇧 英国节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_Kingdom.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(🇬🇧|英国|Britain|United Kingdom|UNITED KINGDOM|England|伦敦|曼彻斯特|Manchester|\bUK(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|GBR|LHR|MAN)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🇫🇷 法国节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/France.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(🇫🇷|法国|\bFR(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|France|FRANCE|FRA|巴黎|马赛|Marseille|CDG|MRS)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🇩🇪 德国节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Germany.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(🇩🇪|德国|Germany|GERMANY|\bDE(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|DEU|柏林|法兰克福|慕尼黑|Munich|MUC)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🇳🇱 荷兰节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Europe_Map.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(🇳🇱|荷兰|Netherlands|NETHERLANDS|\bNL(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|NLD|阿姆斯特丹|AMS)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🇹🇷 土耳其节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Turkey.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(🇹🇷|土耳其|Turkey|TURKEY|Türkiye|\bTR(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|TUR|IST|ANK)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🇷🇺 俄罗斯节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Russia.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(🇷🇺|(?<!白)俄罗斯|(?<!白)俄|莫斯科|圣彼得堡|新西伯利亚|海参崴|符拉迪沃斯托克|哈巴罗夫斯克|伯力|\bRU(?:[-_ ]?\d+)?\b|Russia)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🌐 其他地区
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/World_Map.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(^(?!.*(港|\bHK(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|hk|Hong Kong|HongKong|hongkong|HONG KONG|HONGKONG|深港|HKG|🇭🇰|九龙|Kowloon|新界|沙田|荃湾|葵涌|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|纽约|纽纽|亚特兰大|迈阿密|华盛顿|\bUS(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|United States|UnitedStates|UNITED STATES|USA|America|AMERICA|JFK|EWR|IAD|ATL|ORD|MIA|NYC|LAX|SFO|SEA|DFW|SJC|🇺🇸|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|(?<!尼|-)日|\bJP(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|Japan|JAPAN|JPN|NRT|HND|KIX|TYO|OSA|🇯🇵|关西|Kansai|KANSAI|新加坡|坡|狮城|\bSG(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|Singapore|SINGAPORE|SIN|🇸🇬|台|新北|彰化|\bTW(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|Taiwan|TAIWAN|TWN|TPE|ROC|🇹🇼|\bKR(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|Korea|KOREA|KOR|首尔|韩|韓|春川|Chuncheon|ICN|🇰🇷|加拿大|\bCA(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|Canada|CANADA|CAN|渥太华|温哥华|卡尔加里|蒙特利尔|Montreal|YVR|YYZ|YUL|🇨🇦|英国|Britain|United Kingdom|UNITED KINGDOM|England|伦敦|曼彻斯特|Manchester|\bUK(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|GBR|LHR|MAN|🇬🇧|法国|\bFR(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|France|FRANCE|FRA|巴黎|马赛|Marseille|CDG|MRS|🇫🇷|德国|Germany|GERMANY|\bDE(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|DEU|柏林|法兰克福|慕尼黑|Munich|MUC|🇩🇪|荷兰|Netherlands|NETHERLANDS|\bNL(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|NLD|阿姆斯特丹|AMS|🇳🇱|土耳其|Turkey|TURKEY|Türkiye|\bTR(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|TUR|IST|ANK|🇹🇷|🇷🇺|(?<!白)俄罗斯|(?<!白)俄|莫斯科|圣彼得堡|新西伯利亚|海参崴|符拉迪沃斯托克|哈巴罗夫斯克|伯力|\bRU(?:[-_ ]?\d+)?\b|Russia|家宽|家庭宽带|住宅|Residential|低倍率|低倍|(?<![\d\.])0?\.\d+(?![0-9])(?:x|倍)?|倍率[:： ]?0?\.\d+)).*)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🏠 家宽节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Airport.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(家宽|家庭宽带|住宅|Residential)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🐢 低倍率节点
+    type: url-test
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Lab.png
+    include-all-providers: true
+    empty-fallback: REJECT
+    filter: '(?i)(低倍率|低倍|(?<![\d\.])0?\.\d+(?![0-9])(?:x|倍)?|倍率[:： ]?0?\.\d+)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+  - name: 🎯 全球直连
+    type: select
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png
+    proxies: &choices_63 [DIRECT]
   - name: 机场A
     type: select
     use: [airport-a]
-
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Airport.png
   - name: 机场B
     type: select
     use: [airport-b]
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Airport.png
 
-  # REJECT 为地区无匹配时的显式兜底，不会悄悄直连。
-  # 若地区组显示 REJECT，请勿选择它；若有节点但默认选中 REJECT，手动选节点。
-  - name: 香港节点
-    type: select
-    proxies: [REJECT]
-    use: [airport-a, airport-b]
-    filter: '(?i)香港|Hong[ -]?Kong|\bHK\b|🇭🇰'
-
-  - name: 日本节点
-    type: select
-    proxies: [REJECT]
-    use: [airport-a, airport-b]
-    filter: '(?i)日本|Japan|\bJP\b|🇯🇵'
-
-  - name: 美国节点
-    type: select
-    proxies: [REJECT]
-    use: [airport-a, airport-b]
-    filter: '(?i)美国|United[ -]?States|\bUS\b|\bUSA\b|🇺🇸'
-
-  - name: 新加坡节点
-    type: select
-    proxies: [REJECT]
-    use: [airport-a, airport-b]
-    filter: '(?i)新加坡|Singapore|\bSG\b|🇸🇬'
-
-# 统一使用 MetaCubeX 的 MRS 数据，不额外依赖 geosite.dat / geoip.dat。
-# 下载使用 DIRECT：避免首次安装时必须先有代理的循环依赖。
-# 若所在网络无法直连 raw.githubusercontent.com，见 README 的首次下载说明。
+# Domain/IP 规则优先使用 MRS；包含端口等复合规则时使用 Classical YAML。
+# 所有远程规则提供者统一按 28800 秒（8 小时）更新。
 rule-providers:
-  private-domain:
+  Nonstandard_Port_Direct:
+    behavior: classical
+    interval: 28800
     type: http
+    url: "https://cdn.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@main/rule/Custom_Port_Direct.yaml"
+    format: yaml
+  Custom_Direct_Domain:
     behavior: domain
-    format: mrs
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs
-    path: ./rules/private-domain.mrs
-    interval: 86400
-    proxy: DIRECT
-  cn-domain:
+    interval: 1800
     type: http
-    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@main/rule/Custom_Direct_Domain.mrs"
     format: mrs
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs
-    path: ./rules/cn-domain.mrs
-    interval: 86400
-    proxy: DIRECT
-  openai-domain:
-    type: http
-    behavior: domain
-    format: mrs
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/openai.mrs
-    path: ./rules/openai-domain.mrs
-    interval: 86400
-    proxy: DIRECT
-  anthropic-domain:
-    type: http
-    behavior: domain
-    format: mrs
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/anthropic.mrs
-    path: ./rules/anthropic-domain.mrs
-    interval: 86400
-    proxy: DIRECT
-  youtube-domain:
-    type: http
-    behavior: domain
-    format: mrs
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs
-    path: ./rules/youtube-domain.mrs
-    interval: 86400
-    proxy: DIRECT
-  telegram-domain:
-    type: http
-    behavior: domain
-    format: mrs
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs
-    path: ./rules/telegram-domain.mrs
-    interval: 86400
-    proxy: DIRECT
-  private-ip:
-    type: http
+  Custom_Direct_IP:
     behavior: ipcidr
-    format: mrs
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs
-    path: ./rules/private-ip.mrs
-    interval: 86400
-    proxy: DIRECT
-  cn-ip:
+    interval: 28800
     type: http
-    behavior: ipcidr
+    url: "https://cdn.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@main/rule/Custom_Direct_IP.mrs"
     format: mrs
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs
-    path: ./rules/cn-ip.mrs
-    interval: 86400
-    proxy: DIRECT
+  Custom_Direct_Port:
+    behavior: classical
+    interval: 28800
+    type: http
+    url: "https://cdn.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@main/rule/Custom_Direct_Classical_Port.yaml"
+    format: yaml
+  Custom_Proxy_Domain:
+    behavior: domain
+    interval: 28800
+    type: http
+    url: "https://cdn.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@main/rule/Custom_Proxy_Domain.mrs"
+    format: mrs
+  Custom_Proxy_IP:
+    behavior: ipcidr
+    interval: 28800
+    type: http
+    url: "https://cdn.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@main/rule/Custom_Proxy_IP.mrs"
+    format: mrs
+  Steam_CDN_Domain:
+    behavior: domain
+    interval: 28800
+    type: http
+    url: "https://cdn.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@main/rule/Steam_CDN_Domain.mrs"
+    format: mrs
+  Steam_CDN_IP:
+    behavior: ipcidr
+    interval: 28800
+    type: http
+    url: "https://cdn.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@main/rule/Steam_CDN_IP.mrs"
+    format: mrs
 
+# ==================== 分流规则 Rules ====================
+# 规则自上而下匹配，命中首条规则后停止。
+# no-resolve 用于 IP 类规则，避免为规则匹配额外触发 DNS 解析。
 rules:
-  # 自己添加的精确例外放在这里，规则从上往下先匹配先生效。
-  # - DOMAIN-SUFFIX,example.com,AI服务
-  - RULE-SET,private-domain,DIRECT
-  - RULE-SET,private-ip,DIRECT,no-resolve
-  - RULE-SET,openai-domain,AI服务
-  - RULE-SET,anthropic-domain,AI服务
-  - RULE-SET,youtube-domain,YouTube
-  - RULE-SET,telegram-domain,Telegram
-  - RULE-SET,cn-domain,DIRECT
-  - RULE-SET,cn-ip,DIRECT
-  - MATCH,默认代理
+  - "GEOSITE,private,🎯 全球直连"
+  - "GEOIP,private,🎯 全球直连,no-resolve"
+  - "RULE-SET,Custom_Direct_Domain,🎯 全球直连"
+  - "RULE-SET,Custom_Direct_IP,🎯 全球直连,no-resolve"
+  - "RULE-SET,Custom_Direct_Port,🎯 全球直连"
+  - "RULE-SET,Custom_Proxy_Domain,🚀 手动选择"
+  - "RULE-SET,Custom_Proxy_IP,🚀 手动选择,no-resolve"
+  - "GEOSITE,category-games@cn,🎯 全球直连"
+  - "RULE-SET,Steam_CDN_Domain,🎯 全球直连"
+  - "RULE-SET,Steam_CDN_IP,🎯 全球直连,no-resolve"
+  - "GEOSITE,category-game-platforms-download,🎯 全球直连"
+  - "GEOSITE,category-public-tracker,🎯 全球直连"
+  # Zoom 视频会议优先走代理，可在独立策略组切换直连。
+  - "GEOSITE,zoom,📹 Zoom"
+  - "GEOSITE,talkatone,📞 Talkatone"
+  - "GEOSITE,telegram,📨 Telegram"
+  - "GEOSITE,discord,🎧 Discord"
+  - "GEOSITE,category-communication,💬 即时通讯"
+  - "GEOSITE,xai,🤖 Grok"
+  - "GEOSITE,category-social-media-!cn,🌐 社交媒体"
+  - "GEOSITE,openai,🤖 ChatGPT"
+  - "GEOSITE,onedrive,💾 OneDrive"
+  - "GEOSITE,bing,🤖 Copilot"
+  - "GEOSITE,anthropic,🤖 Claude"
+  - "GEOSITE,google-gemini,🤖 Gemini"
+  - "GEOSITE,category-ai-!cn,🤖 国外AI服务"
+  # 国内 AI 服务默认直连，可按需切换代理；须位于 cn 兜底规则之前。
+  - "GEOSITE,category-ai-cn,🤖 国内AI服务"
+  - "GEOSITE,docker,📦 容器服务"
+  - "GEOSITE,category-container,📦 容器服务"
+  - "GEOSITE,github,🚀 GitHub"
+  # GitHub 保留独立策略组，其余开发者服务在此匹配。
+  - "GEOSITE,category-dev,💻 开发者服务"
+  # 国外学术资源须先于 Google 等服务大类匹配。
+  - "GEOSITE,category-scholar-!cn,📚 学术资源"
+  - "GEOSITE,category-speedtest,🚀 测速工具"
+  - "GEOSITE,steam,🎮 Steam"
+  - "GEOSITE,youtube,📹 YouTube"
+  - "GEOSITE,apple-tvplus,🎥 AppleTV+"
+  - "GEOSITE,apple,🍎 苹果服务"
+  - "GEOSITE,microsoft,Ⓜ️ 微软服务"
+  - "GEOSITE,googlefcm,📢 谷歌FCM"
+  - "GEOSITE,google,🇬 谷歌服务"
+  - "GEOSITE,tiktok,🎶 TikTok"
+  - "GEOSITE,netflix,🎥 Netflix"
+  - "GEOSITE,disney,🎥 DisneyPlus"
+  - "GEOSITE,hbo,🎥 HBO"
+  - "GEOSITE,primevideo,🎥 PrimeVideo"
+  - "GEOSITE,category-emby,🎥 Emby"
+  - "GEOSITE,spotify,🎻 Spotify"
+  - "GEOSITE,bahamut,📺 Bahamut"
+  - "GEOSITE,category-games,🎮 游戏平台"
+  - "GEOSITE,category-media,📰 新闻资讯"
+  - "GEOSITE,category-entertainment,🌎 国外媒体"
+  - "GEOSITE,category-pt,⏬ PT站点"
+  - "GEOSITE,paypal,💳 PayPal"
+  - "GEOSITE,category-ecommerce,🛒 国外电商"
+  - "GEOSITE,category-cryptocurrency,🪙 加密货币"
+  - "GEOSITE,gfw,🚀 手动选择"
+  - "GEOIP,telegram,📨 Telegram,no-resolve"
+  - "GEOIP,twitter,🌐 社交媒体,no-resolve"
+  - "GEOIP,facebook,🌐 社交媒体,no-resolve"
+  - "GEOIP,google,🇬 谷歌服务,no-resolve"
+  - "GEOIP,netflix,🎥 Netflix,no-resolve"
+  # GFW 及专用规则未命中的国外域名默认直连，可在策略组中切换代理。
+  - "GEOSITE,geolocation-!cn,🌍 国外域名"
+  - "GEOSITE,cn,🎯 全球直连"
+  - "GEOIP,cn,🎯 全球直连,no-resolve"
+  - "RULE-SET,Nonstandard_Port_Direct,🔀 非标端口"
+  - "MATCH,🐟 漏网之鱼"
