@@ -158,7 +158,7 @@ proxy-groups:
   - name: 📹 Zoom
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Media.png
-    proxies: &choices_6 [🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, ♻️ 自动选择, 🚀 手动选择, 🎯 全球直连]
+    proxies: &choices_6 [🚀 手动选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🎯 全球直连]
     include-all-providers: true
   - name: 💬 即时通讯
     type: select
@@ -223,7 +223,7 @@ proxy-groups:
   - name: 🐋 国内AI服务
     type: select
     icon: https://cdn.jsdelivr.net/npm/@lobehub/icons-static-png@2.10.0/light/deepseek-color.png
-    proxies: &choices_19 [🎯 全球直连, 🚀 手动选择, ♻️ 自动选择, 🇸🇬 新加坡节点, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点]
+    proxies: &choices_19 [🚀 手动选择, ♻️ 自动选择, 🇸🇬 新加坡节点, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🎯 全球直连]
     include-all-providers: true
   - name: 🎶 TikTok
     type: select
@@ -263,7 +263,7 @@ proxy-groups:
   - name: 🎥 Emby
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Emby.png
-    proxies: &choices_27 [🚀 手动选择, ♻️ 自动选择, 🎯 全球直连, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点]
+    proxies: &choices_27 [🚀 手动选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🎯 全球直连]
     include-all-providers: true
   - name: 🎻 Spotify
     type: select
@@ -273,7 +273,7 @@ proxy-groups:
   - name: 📺 Bahamut
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bahamut.png
-    proxies: &choices_29 [🇼🇸 台湾节点, 🇭🇰 香港节点, 🚀 手动选择, 🎯 全球直连]
+    proxies: &choices_29 [🚀 手动选择, 🇼🇸 台湾节点, 🇭🇰 香港节点, 🎯 全球直连]
     include-all-providers: true
   - name: 🌎 国外媒体
     type: select
@@ -308,7 +308,7 @@ proxy-groups:
   - name: 🍎 苹果服务
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple_2.png
-    proxies: &choices_36 [🎯 全球直连, 🚀 手动选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点]
+    proxies: &choices_36 [🚀 手动选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🎯 全球直连]
     include-all-providers: true
   - name: Ⓜ️ 微软服务
     type: select
@@ -337,7 +337,7 @@ proxy-groups:
   - name: ⏬ PT站点
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
-    proxies: &choices_42 [🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🚀 手动选择, ♻️ 自动选择, 🎯 全球直连]
+    proxies: &choices_42 [🚀 手动选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🎯 全球直连]
     include-all-providers: true
   - name: 🚀 测速工具
     type: select
