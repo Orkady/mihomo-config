@@ -195,34 +195,34 @@ proxy-groups:
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ChatGPT.png
     proxies: &choices_13 [🚀 手动选择, ♻️ 自动选择, 🇸🇬 新加坡节点, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点]
     include-all-providers: true
-  - name: 🤖 Copilot
+  - name: 🧑‍✈️ Copilot
     type: select
     icon: https://cdn.jsdelivr.net/gh/powerfullz/override-rules@main/icons/Microsoft_Copilot.png
     proxies: *choices_13
     include-all-providers: true
-  - name: 🤖 Claude
+  - name: ✴️ Claude
     type: select
-    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    icon: https://cdn.jsdelivr.net/npm/@lobehub/icons-static-png@2.10.0/light/claude-color.png
     proxies: *choices_13
     include-all-providers: true
-  - name: 🤖 Gemini
+  - name: ✨ Gemini
     type: select
-    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    icon: https://cdn.jsdelivr.net/npm/@lobehub/icons-static-png@2.10.0/light/gemini-color.png
     proxies: *choices_13
     include-all-providers: true
   - name: 🤖 Grok
     type: select
-    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    icon: https://cdn.jsdelivr.net/npm/@lobehub/icons-static-png@2.10.0/light/grok.png
     proxies: *choices_13
     include-all-providers: true
-  - name: 🤖 国外AI服务
+  - name: 🌐 国外AI服务
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
     proxies: *choices_13
     include-all-providers: true
-  - name: 🤖 国内AI服务
+  - name: 🐋 国内AI服务
     type: select
-    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    icon: https://cdn.jsdelivr.net/npm/@lobehub/icons-static-png@2.10.0/light/deepseek-color.png
     proxies: &choices_19 [🎯 全球直连, 🚀 手动选择, ♻️ 自动选择, 🇸🇬 新加坡节点, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点]
     include-all-providers: true
   - name: 🎶 TikTok
@@ -595,12 +595,12 @@ rules:
   - "GEOSITE,category-social-media-!cn,🌐 社交媒体"
   - "GEOSITE,openai,🤖 ChatGPT"
   - "GEOSITE,onedrive,💾 OneDrive"
-  - "GEOSITE,bing,🤖 Copilot"
-  - "GEOSITE,anthropic,🤖 Claude"
-  - "GEOSITE,google-gemini,🤖 Gemini"
-  - "GEOSITE,category-ai-!cn,🤖 国外AI服务"
+  - "GEOSITE,bing,🧑‍✈️ Copilot"
+  - "GEOSITE,anthropic,✴️ Claude"
+  - "GEOSITE,google-gemini,✨ Gemini"
+  - "GEOSITE,category-ai-!cn,🌐 国外AI服务"
   # 国内 AI 服务默认直连，可按需切换代理；须位于 cn 兜底规则之前。
-  - "GEOSITE,category-ai-cn,🤖 国内AI服务"
+  - "GEOSITE,category-ai-cn,🐋 国内AI服务"
   - "GEOSITE,docker,📦 容器服务"
   - "GEOSITE,category-container,📦 容器服务"
   - "GEOSITE,github,🚀 GitHub"

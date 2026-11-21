@@ -1,6 +1,6 @@
 # mihomo-config
 
-一份供 Clash Verge Rev（Windows、macOS）和 FlClash（Android）共用的 Mihomo 配置。三端订阅同一份 [main.yaml](main.yaml)，各自在本地脚本里填写机场地址。分流与地区筛选采用 [Aethersailor Full](https://github.com/Aethersailor/Custom_OpenClash_Rules/blob/main/cfg/yaml/Custom_Clash_Full.yaml)，彩色图标参考 [powerfullz](https://github.com/powerfullz/override-rules/blob/main/src/catalog/icons.ts) 和 [Qure](https://github.com/Koolson/Qure)。OpenAI 域名进入 `🤖 ChatGPT`，Anthropic 进入 `🤖 Claude`，各设备独立选择出口。
+一份供 Clash Verge Rev（Windows、macOS）和 FlClash（Android）共用的 Mihomo 配置。三端订阅同一份 [main.yaml](main.yaml)，各自在本地脚本里填写机场地址。分流与地区筛选采用 [Aethersailor Full](https://github.com/Aethersailor/Custom_OpenClash_Rules/blob/main/cfg/yaml/Custom_Clash_Full.yaml)，彩色图标参考 [powerfullz](https://github.com/powerfullz/override-rules/blob/main/src/catalog/icons.ts) 和 [Qure](https://github.com/Koolson/Qure)。OpenAI 域名进入 `🤖 ChatGPT`，Anthropic 进入 `✴️ Claude`，各设备独立选择出口。
 
 ## 第一次使用
 
@@ -13,7 +13,7 @@
 
 | 想做的事 | 修改位置 | 如何生效 |
 | --- | --- | --- |
-| 在已有选项间切换 AI 出口 | 当前设备的「🤖 ChatGPT」「🤖 Claude」「🤖 Gemini」等组 | 可固定具体节点，或交给地区组自动测速 |
+| 在已有选项间切换 AI 出口 | 当前设备的「🤖 ChatGPT」「✴️ Claude」「✨ Gemini」等组 | 可固定具体节点，或交给地区组自动测速 |
 | 给机场策略组改名 | 各端本地脚本的 `airportNames` | 保留左侧原组名，只改右侧显示名。重新应用后，机场组、上级菜单和该机场所有节点的 `[显示名]` 前缀一起更新 |
 | 更换机场订阅地址或 token | 各端本地脚本的 `urls` | 保存、重新应用脚本并刷新对应 provider。若先在磁盘上编辑，也要把改动复制到客户端 |
 | 统一节点显示名称 | `proxy-providers.airport-a.override.proxy-name` 的 `&region_labels` | A/B 共用改名表。`HK01` 默认显示为 `[机场A] 🇭🇰 香港·HK01`。已有地区旗帜时保留原旗；无旗时按可识别的地区名或缩写补旗 |
@@ -40,7 +40,7 @@
   - DOMAIN-SUFFIX,example.org,📚 学术资源
 ```
 
-**调整整个服务**时，先在服务组中切换。例如在「🤖 Claude」选择「🇯🇵 日本节点」，即可让 Anthropic 使用日本地区的自动测速结果。需要稳定出口时可以直接选具体节点。
+**调整整个服务**时，先在服务组中切换。例如在「✴️ Claude」选择「🇯🇵 日本节点」，即可让 Anthropic 使用日本地区的自动测速结果。需要稳定出口时可以直接选具体节点。
 
 **接入新的远程规则集**时，先在 `rule-providers` 中声明唯一名称、公开下载 URL、独立缓存路径及更新周期，再在 `rules` 中加入 `RULE-SET,规则集名称,已有策略组名称`。按上游说明选择 `behavior` 和 `format`，例如本配置的域名 MRS 用 `domain` / `mrs`，IP MRS 用 `ipcidr` / `mrs`。规则从上往下匹配，`MATCH,🐟 漏网之鱼` 留在最后。[规则数据来源](https://github.com/MetaCubeX/meta-rules-dat) · [Mihomo 规则集文档](https://wiki.metacubex.one/config/rule-providers/)
 
