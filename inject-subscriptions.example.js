@@ -7,6 +7,9 @@ function main(config) {
     "airport-b": "REPLACE_WITH_AIRPORT_B_URL"
   };
 
+  // 只改右边的显示名，左边与主配置中的原组名对应。
+  const airportNames = { "机场A": "机场A", "机场B": "机场B" };
+
   const providers = config["proxy-providers"];
   if (!providers || typeof providers !== "object") {
     throw new Error("主配置缺少 proxy-providers，停止应用");
@@ -26,5 +29,19 @@ function main(config) {
   for (const name of Object.keys(urls)) {
     providers[name].url = urls[name];
   }
+  const groups = config["proxy-groups"] || [];
+  const rename = name => Object.prototype.hasOwnProperty.call(airportNames, name)
+    ? airportNames[name].trim() : name;
+  const names = groups.map(group => rename(group.name));
+  const reserved = ["DIRECT", "REJECT", "REJECT-DROP", "PASS", "COMPATIBLE", "GLOBAL"];
+  if (new Set(names).size !== names.length || Object.values(airportNames).some(name =>
+    !name.trim() || reserved.includes(name.trim()) || /[,\r\n]/.test(name))) {
+    throw new Error("机场显示名不能为空、重复、使用内置名称或含逗号和换行");
+  }
+  for (const group of groups) {
+    group.name = rename(group.name);
+    if (Array.isArray(group.proxies)) group.proxies = group.proxies.map(rename);
+  }
+
   return config;
 }
