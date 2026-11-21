@@ -173,57 +173,57 @@ proxy-groups:
   - name: 🚀 GitHub
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png
-    proxies: &choices_9 [🚀 手动选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🎯 全球直连]
+    proxies: *choices_6
     include-all-providers: true
   - name: 📦 容器服务
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
-    proxies: *choices_9
+    proxies: *choices_6
     include-all-providers: true
   - name: 💻 开发者服务
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
-    proxies: *choices_9
+    proxies: *choices_6
     include-all-providers: true
   - name: 📚 学术资源
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Scholar.png
-    proxies: *choices_9
+    proxies: *choices_6
     include-all-providers: true
   - name: 🤖 ChatGPT
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ChatGPT.png
-    proxies: &choices_13 [🚀 手动选择, ♻️ 自动选择, 🇸🇬 新加坡节点, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点]
+    proxies: *choices_3
     include-all-providers: true
   - name: 🧑‍✈️ Copilot
     type: select
     icon: https://cdn.jsdelivr.net/gh/powerfullz/override-rules@main/icons/Microsoft_Copilot.png
-    proxies: *choices_13
+    proxies: *choices_3
     include-all-providers: true
   - name: ✴️ Claude
     type: select
     icon: https://cdn.jsdelivr.net/npm/@lobehub/icons-static-png@2.10.0/light/claude-color.png
-    proxies: *choices_13
+    proxies: *choices_3
     include-all-providers: true
   - name: ✨ Gemini
     type: select
     icon: https://cdn.jsdelivr.net/npm/@lobehub/icons-static-png@2.10.0/light/gemini-color.png
-    proxies: *choices_13
+    proxies: *choices_3
     include-all-providers: true
   - name: 🤖 Grok
     type: select
     icon: https://cdn.jsdelivr.net/npm/@lobehub/icons-static-png@2.10.0/light/grok.png
-    proxies: *choices_13
+    proxies: *choices_3
     include-all-providers: true
   - name: 🌐 国外AI服务
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
-    proxies: *choices_13
+    proxies: *choices_3
     include-all-providers: true
   - name: 🐋 国内AI服务
     type: select
     icon: https://cdn.jsdelivr.net/npm/@lobehub/icons-static-png@2.10.0/light/deepseek-color.png
-    proxies: &choices_19 [🚀 手动选择, ♻️ 自动选择, 🇸🇬 新加坡节点, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🎯 全球直连]
+    proxies: *choices_6
     include-all-providers: true
   - name: 🎶 TikTok
     type: select
@@ -233,47 +233,47 @@ proxy-groups:
   - name: 📹 YouTube
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
-    proxies: *choices_13
+    proxies: *choices_3
     include-all-providers: true
   - name: 🎥 Netflix
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png
-    proxies: *choices_13
+    proxies: *choices_3
     include-all-providers: true
   - name: 🎥 DisneyPlus
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Disney+.png
-    proxies: *choices_13
+    proxies: *choices_3
     include-all-providers: true
   - name: 🎥 HBO
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/HBO.png
-    proxies: *choices_13
+    proxies: *choices_3
     include-all-providers: true
   - name: 🎥 PrimeVideo
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Prime_Video.png
-    proxies: *choices_13
+    proxies: *choices_3
     include-all-providers: true
   - name: 🎥 AppleTV+
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple_TV_Plus.png
-    proxies: &choices_26 [🚀 手动选择, ♻️ 自动选择, 🇸🇬 新加坡节点, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🎯 全球直连]
+    proxies: *choices_6
     include-all-providers: true
   - name: 🎥 Emby
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Emby.png
-    proxies: &choices_27 [🚀 手动选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🎯 全球直连]
+    proxies: *choices_6
     include-all-providers: true
   - name: 🎻 Spotify
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png
-    proxies: *choices_27
+    proxies: *choices_6
     include-all-providers: true
   - name: 📺 Bahamut
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bahamut.png
-    proxies: &choices_29 [🚀 手动选择, 🇼🇸 台湾节点, 🇭🇰 香港节点, 🎯 全球直连]
+    proxies: &choices_29 [🚀 手动选择, 🇭🇰 香港节点, 🇼🇸 台湾节点, 🎯 全球直连]
     include-all-providers: true
   - name: 🌎 国外媒体
     type: select
@@ -298,7 +298,7 @@ proxy-groups:
   - name: 📢 谷歌FCM
     type: select
     icon: https://cdn.jsdelivr.net/gh/Orz-3/mini@master/Color/Google.png
-    proxies: *choices_27
+    proxies: *choices_6
     include-all-providers: true
   - name: 🇬 谷歌服务
     type: select
@@ -308,51 +308,51 @@ proxy-groups:
   - name: 🍎 苹果服务
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple_2.png
-    proxies: &choices_36 [🚀 手动选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🎯 全球直连]
+    proxies: *choices_6
     include-all-providers: true
   - name: Ⓜ️ 微软服务
     type: select
     icon: https://cdn.jsdelivr.net/gh/powerfullz/override-rules@main/icons/Microsoft_Copilot.png
-    proxies: *choices_36
+    proxies: *choices_6
     include-all-providers: true
   - name: 💾 OneDrive
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/OneDrive.png
-    proxies: *choices_36
+    proxies: *choices_6
     include-all-providers: true
   - name: 💳 PayPal
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/PayPal.png
-    proxies: *choices_36
+    proxies: *choices_6
   - name: 🎮 游戏平台
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
-    proxies: *choices_36
+    proxies: *choices_6
     include-all-providers: true
   - name: 🎮 Steam
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png
-    proxies: *choices_36
+    proxies: *choices_6
     include-all-providers: true
   - name: ⏬ PT站点
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
-    proxies: &choices_42 [🚀 手动选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇺🇸 美国节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇼🇸 台湾节点, 🇰🇷 韩国节点, 🇨🇦 加拿大节点, 🇬🇧 英国节点, 🇫🇷 法国节点, 🇩🇪 德国节点, 🇳🇱 荷兰节点, 🇹🇷 土耳其节点, 🇷🇺 俄罗斯节点, 🌐 其他地区, 🏠 家宽节点, 🐢 低倍率节点, 🎯 全球直连]
+    proxies: *choices_6
     include-all-providers: true
   - name: 🚀 测速工具
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Speedtest.png
-    proxies: *choices_36
+    proxies: *choices_6
     include-all-providers: true
   - name: 🌍 国外域名
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
-    proxies: *choices_36
+    proxies: *choices_6
     include-all-providers: true
   - name: 🐟 漏网之鱼
     type: select
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png
-    proxies: *choices_36
+    proxies: *choices_6
     include-all-providers: true
   - name: 🔀 非标端口
     type: select
