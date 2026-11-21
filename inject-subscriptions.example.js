@@ -39,7 +39,16 @@ function main(config) {
     throw new Error("机场显示名不能为空、重复、使用内置名称或含逗号和换行");
   }
   for (const group of groups) {
-    group.name = rename(group.name);
+    const displayName = rename(group.name);
+    if (Object.prototype.hasOwnProperty.call(airportNames, group.name) &&
+        Array.isArray(group.use) && group.use.length === 1) {
+      const provider = providers[group.use[0]];
+      if (provider) {
+        provider.override = provider.override || {};
+        provider.override["additional-prefix"] = "[" + displayName + "] ";
+      }
+    }
+    group.name = displayName;
     if (Array.isArray(group.proxies)) group.proxies = group.proxies.map(rename);
   }
 
