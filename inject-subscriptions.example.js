@@ -45,7 +45,7 @@ function main(config) {
       const provider = providers[group.use[0]];
       if (provider) {
         provider.override = provider.override || {};
-        provider.override["additional-prefix"] = "[" + displayName + "] ";
+        provider.override["additional-prefix"] = "「" + displayName + "」 ";
       }
     }
     group.name = displayName;

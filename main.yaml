@@ -56,15 +56,15 @@ proxy-providers:
       interval: 900
       lazy: true
     override:
-      additional-prefix: '[A] '
+      additional-prefix: '「A」 '
       # 保留原标签和编号，避免 HK01 和 香港01 改成同名。两个机场共用此表。
       proxy-name: &region_labels
         - pattern: '(家|商)寬'
           target: '${1}宽'
         - pattern: '家庭[宽寬][带帶]'
-          target: '家庭宽带'
+          target: '家宽'
         - pattern: '商[业業][宽寬][带帶]'
-          target: '商业宽带'
+          target: '商宽'
         - pattern: '(?i)(^|[^a-zA-Z])(HK|HKG|Hong[ -]?Kong)(?=[^a-zA-Z]|$)'
           target: '${1}香港·${2}'
         - pattern: '(?i)(^|[^a-zA-Z])(US|USA|United[ -]?States)(?=[^a-zA-Z]|$)'
@@ -131,7 +131,7 @@ proxy-providers:
       interval: 900
       lazy: true
     override:
-      additional-prefix: '[B] '
+      additional-prefix: '「B」 '
       proxy-name: *region_labels
 
 # Aethersailor Full：服务组选出口，地区组跨机场测速。
