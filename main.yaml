@@ -564,6 +564,20 @@ proxy-groups:
 # Domain/IP 规则优先使用 MRS；包含端口等复合规则时使用 Classical YAML。
 # 所有远程规则提供者统一按 28800 秒（8 小时）更新。
 rule-providers:
+  personal-direct:
+    behavior: classical
+    format: yaml
+    type: http
+    url: "https://cdn.jsdelivr.net/gh/Orkady/mihomo-config@main/rules/personal-direct.yaml"
+    path: ./rules/personal-direct.yaml
+    interval: 3600
+  personal-proxy:
+    behavior: classical
+    format: yaml
+    type: http
+    url: "https://cdn.jsdelivr.net/gh/Orkady/mihomo-config@main/rules/personal-proxy.yaml"
+    path: ./rules/personal-proxy.yaml
+    interval: 3600
   Nonstandard_Port_Direct:
     behavior: classical
     interval: 28800
@@ -619,6 +633,9 @@ rule-providers:
 rules:
   - "GEOSITE,private,🎯 全球直连"
   - "GEOIP,private,🎯 全球直连,no-resolve"
+  # 个人清单：改 rules/personal-*.yaml 即可，无需动主配置。直连优先于代理。
+  - "RULE-SET,personal-direct,🎯 全球直连"
+  - "RULE-SET,personal-proxy,🚀 手动选择"
   - "RULE-SET,Custom_Direct_Domain,🎯 全球直连"
   - "RULE-SET,Custom_Direct_IP,🎯 全球直连,no-resolve"
   - "RULE-SET,Custom_Direct_Port,🎯 全球直连"

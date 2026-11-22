@@ -1,0 +1,19 @@
+# 个人代理清单（classical 规则集）
+#
+# 这里列出的域名 / IP 走「🚀 手动选择」，再由你在客户端里决定具体出口。
+# 与 personal-direct.yaml 同时命中时，直连清单优先（它在主配置里排在前面）。
+#
+# 可用写法与 personal-direct.yaml 相同：
+#   - DOMAIN,example.com
+#   - DOMAIN-SUFFIX,example.com
+#   - DOMAIN-KEYWORD,example
+#   - IP-CIDR,192.0.2.0/24,no-resolve
+#
+# 想固定走某个服务组或地区组时，不必写在这里：
+# 直接在客户端把这个服务对应的策略组切过去即可，规则文件只负责"哪些域名要代理"。
+#
+# 注意：本文件在公开仓库里，写入的域名会被公开。
+payload: []
+# 示例：
+#  - DOMAIN-SUFFIX,example.com
+#  - DOMAIN-SUFFIX,example.net

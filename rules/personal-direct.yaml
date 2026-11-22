@@ -1,0 +1,22 @@
+# 个人直连清单（classical 规则集）
+#
+# 这里列出的域名 / IP 一律走「🎯 全球直连」，并且优先于主配置里后面的所有规则。
+# 只写规则本身，不要写策略组名——策略组由主配置里的 RULE-SET 那一行决定。
+#
+# 可用写法：
+#   - DOMAIN,example.com              只匹配这个主机名
+#   - DOMAIN-SUFFIX,example.com       匹配该域名及其所有子域名
+#   - DOMAIN-KEYWORD,example          域名中包含该关键词
+#   - IP-CIDR,192.0.2.0/24,no-resolve IPv4 网段，建议带 no-resolve 避免多一次 DNS
+#   - IP-CIDR6,2001:db8::/32,no-resolve  IPv6 网段
+#   - PROCESS-NAME,AppName           进程名，仅部分客户端支持
+#
+# 修改方式：加一行、删一行，保存提交即可；客户端按 interval 定时更新。
+# 想在改完后立刻生效，可在客户端手动刷新该规则集。
+#
+# 注意：本文件在公开仓库里，写入的域名会被公开。需要保密的条目请放在本地脚本中注入。
+payload: []
+# 下面是可以直接取消注释使用的示例：
+#  - DOMAIN-SUFFIX,example.org
+#  - DOMAIN,files.example.net
+#  - IP-CIDR,192.0.2.0/24,no-resolve

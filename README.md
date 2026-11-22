@@ -75,6 +75,39 @@ A 在 YAML 中用 `&subscription_status` 和 `&region_labels` 定义共用的提
 
 **接入新的远程规则集**时，先在 `rule-providers` 中声明唯一名称、公开下载 URL、独立缓存路径及更新周期，再在 `rules` 中加入 `RULE-SET,规则集名称,已有策略组名称`。按上游说明选择 `behavior` 和 `format`，例如本配置的域名 MRS 用 `domain` / `mrs`，IP MRS 用 `ipcidr` / `mrs`。规则从上往下匹配，`MATCH,🐟 漏网之鱼` 留在最后。[规则数据来源](https://github.com/MetaCubeX/meta-rules-dat) · [Mihomo 规则集文档](https://wiki.metacubex.one/config/rule-providers/)
 
+## 维护个人分流清单
+
+自己维护的规则放在 `rules/` 下，主配置只需引用，平时不用动：
+
+| 文件 | 命中后走哪里 | 适合放什么 |
+| --- | --- | --- |
+| `rules/personal-direct.yaml` | 🎯 全球直连 | 需要绕开代理的站点、内网以外的固定 IP |
+| `rules/personal-proxy.yaml` | 🚀 手动选择 | 明确要靠代理访问的域名 |
+
+两个规则集在主配置里排在私有网络规则之后、上游规则之前，所以**优先于 Aethersailor Full 的全部分流**。同一域名同时出现在两个文件时，直连先生效。
+
+写法（classical 规则集，**只写规则，不写策略组名**）：
+
+```yaml
+payload:
+  - DOMAIN-SUFFIX,example.org          # 该域名及所有子域名
+  - DOMAIN,files.example.net           # 只匹配这个主机名
+  - IP-CIDR,192.0.2.0/24,no-resolve    # IPv4 网段
+```
+
+修改流程：
+
+1. 在对应文件里加一行或删一行；文件末尾保留了可直接取消注释的示例。
+2. 提交并推送。
+3. 客户端刷新该规则集，或等 1 小时自动更新（`interval: 3600`）。
+
+两个注意点：
+
+- **文件在公开仓库里**，写进去的域名会公开；需要保密的条目可以放到本地脚本中注入。
+- **规则集走 jsDelivr，有缓存。** 刚推完可能仍拿到旧版，需要立即生效可以清缓存：`https://purge.jsdelivr.net/gh/Orkady/mihomo-config@main/rules/personal-direct.yaml`。
+
+验证是否生效：加载后在客户端「连接」页看该请求命中的规则集名称，应显示 `personal-direct` 或 `personal-proxy`，而不是后面的上游规则。
+
 ## 发布与验证
 
 先在一台设备验证修改。在客户端的「连接」页面新建一次目标网站连接，检查**命中规则 → 策略组 → 实际节点**。确认后，从仓库根目录显式暂存本次修改的公共文件。例如只修改分流时：

@@ -2,7 +2,10 @@
 .validation/
 private/
 providers/
-rules/
+# 客户端缓存不提交；只公开自己维护的个人分流清单。
+rules/*
+!rules/personal-direct.yaml
+!rules/personal-proxy.yaml
 *.private.*
 *.local.*
 inject-subscriptions.js
